@@ -1,0 +1,169 @@
+<!doctype html>
+ <html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Weather Us</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image`/png" href="favicon.ico">
+
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+
+
+        <link rel="stylesheet" href="assets/css/swiper.min.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="assets/css/iconfont.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/magnific-popup.css">
+        <link rel="stylesheet" href="assets/css/bootsnav.css">
+
+
+
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <link rel="stylesheet" href="assets/css/responsive.css" />
+
+        <script src="assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="assets/js/vendor/jquery-1.11.2.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    </head>
+
+    <body data-spy="scroll" data-tar`       `=".navbar-collapse">
+
+
+        <div id="loading">
+            <div id="loading-center">
+                <div id="loading-center-absolute">
+                    <div class="object" id="object_one"></div>
+                    <div class="object" id="object_two"></div>
+                    <div class="object" id="object_three"></div>
+                    <div class="object" id="object_four"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="culmn">
+
+
+            <nav class="navbar navbar-default bootsnav navbar-fixed white no-background">
+                <div class="container">  
+
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <a class="navbar-brand" href="#brand">
+                            <img src="assets/images/logo.png" class="logo logo-display" alt="">
+                            <img src="assets/images/footer-logo.png" class="logo logo-scrolled" alt="">
+                        </a>
+
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        <ul class="nav navbar-nav navbar-center">
+                            <li><a href="/">Home</a></li>
+                            <li><a onclick="logout()">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>   
+            </nav>
+
+            <section id="home" class="home">
+                <div class="container">
+                    <div class="row">
+                        <div class="main_home">
+                            <div class="col-md-6 splash">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title">Weather Us</h5>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <input type="text" class="form-control" placeholder="Location" id="location">
+                                      </div>
+                                      <div class="modal-footer splash">
+                                        <button type="button" class="btn btn-primary" onclick="getLocation()" >Get by my location</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+
+                        <table class="table text-black" style="background-color: white;" id="favorite">
+                            <h1 class="text-white">Favorite Location</h1>
+                          </table>
+                    </div>
+                </div>
+            </section>
+
+            <div class="loadings style-2"><div class="loadings-wheel"></div></div>
+  
+  <div class="modal fade" id="weather" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h5 class="modal-title" id="exampleModalLabel">Weather Us</h5>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img class="weatherIcon" id="weatherIcon" width="150px" height="150px">
+          <h1 id="suhu"></h1>
+          <h2 id="deskripsi"></h2>
+          <h3><i class="fa fa-map-marker" id="lokasi"></i></h5>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="lat">
+            <input type="hidden" id="long">
+            <input type="hidden" id="kota">
+            <input type="hidden" id="ikon">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onClick="tambahFavorit()">Add favorite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="cuacafavorit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h5 class="modal-title" id="exampleModalLabel">Weather Us</h5>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img class="weatherIcon" id="fweatherIcon" width="150px" height="150px">
+          <h1 id="fsuhu"></h1>
+          <h2 id="fdeskripsi"></h2>
+          <h3><i class="fa fa-map-marker" id="flokasi"></i></h5>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="fid">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onClick="deleteFavorit()">Delete favorite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        </div>
+        <script>function tambahFavorit(){$("#weather").modal("hide");var a=$("#lat").val(),t=$("#long").val(),o=$("#kota").val(),e=$("#suhu").html(),r=$("#deskripsi").html(),i=$("#ikon").val();$.ajax({cache:!1,url:"/api/favorite/add",headers:{Authorization:localStorage.getItem("auth")},method:"PUT",data:{lat:a,long:t,kota:o},success:function(a){0==a.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#favorite").append('<tr id="row'+a.id+'" onclick="lihatfavorit('+a.id+')">\n                              <td>'+o+'</td>\n                              <td align="right">'+e+'</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="http://openweathermap.org/img/wn/'+i+'.png"></span>'+r+"</td>\n                              \n</tr>"),$("#weather").modal("hide")}})}function logout(){localStorage.removeItem("auth"),window.location.href="/"}function getLocation(){navigator.geolocation?navigator.geolocation.getCurrentPosition(showPosition):alert("Geolocation is not supported by this browser.")}function showPosition(a){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:a.coords.latitude,long:a.coords.longitude}}).done(t=>{0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var o=parseFloat(t.main.temp-273.15).toFixed(2);$("#suhu").html(o+"&deg;C"),$("#lat").val(a.coords.latitude),$("#long").val(a.coords.longitude),$("#kota").val(t.name),$("#lokasi").html(" "+t.name),$("#deskripsi").html(" "+t.weather[0].description),$("#ikon").val(t.weather[0].icon),$("#weatherIcon").attr("src","http://openweathermap.org/img/wn/"+t.weather[0].icon+"@2x.png"),$("#weather").modal("show")})}function refreshFavorite(){$.ajax({url:"/api/favorite/all",method:"GET",headers:{Authorization:localStorage.getItem("auth")}}).done(a=>{if(0==a.success&&(localStorage.removeItem("auth"),window.location.href="/"),0!==a.data.length){a.data.forEach(a=>{$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:a.lat,long:a.long}}).then(t=>{0==t.success&&(localStorage.removeItem("auth"),window.location.href="/");var o=parseFloat(t.main.temp-273.15).toFixed(2);$("#favorite").append('<tr id="row'+a.id+'" onclick="lihatfavorit('+a.id+')">\n                              <td>'+a.kota+'</td>\n                              <td align="right">'+o+'&deg;C</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="http://openweathermap.org/img/wn/'+t.weather[0].icon+'.png"></span>'+t.weather[0].description+"</td>\n                              \n</tr>")})})}})}function lihatfavorit(a){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{id:a}}).done(t=>{0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var o=parseFloat(t.main.temp-273.15).toFixed(2);$("#fsuhu").html(o+"&deg;C"),$("#fkota").val(t.name),$("#flokasi").html(" "+t.name),$("#fid").val(a),$("#fdeskripsi").html(" "+t.weather[0].description),$("#fweatherIcon").attr("src","http://openweathermap.org/img/wn/"+t.weather[0].icon+"@2x.png"),$("#cuacafavorit").modal("show")})}function deleteFavorit(){$("#cuacafavorit").modal("hide");var a=$("#fid").val();$("#row"+a).remove(),$.ajax({cache:!1,url:"/api/favorite/"+a,headers:{Authorization:localStorage.getItem("auth")},method:"DELETE",success:function(a){0==a.success&&(localStorage.removeItem("auth"),window.location.href="/")}})}$(document).ready(function(){refreshFavorite(),$("#location").autocomplete({source:function(a,t){$.ajax({cache:!1,url:"/api/city/"+a.term,headers:{Authorization:localStorage.getItem("auth")},success:function(a){0==a.success&&(localStorage.removeItem("auth"),window.location.href="/"),t($.map(a.predictions,function(a){return{label:a.description,id:a.place_id}}))}})},select:function(a,t){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({cache:!1,url:"/api/geo/"+t.item.id,headers:{Authorization:localStorage.getItem("auth")},success:function(a){0==a.success&&(localStorage.removeItem("auth"),window.location.href="/");var t=a.result.geometry.location.lat,o=a.result.geometry.location.lng;$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:t,long:o}}).done(a=>{0==a.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var e=parseFloat(a.main.temp-273.15).toFixed(2);$("#suhu").html(e+"&deg;C"),$("#lat").val(t),$("#long").val(o),$("#kota").val(a.name),$("#lokasi").html(" "+a.name),$("#deskripsi").html(" "+a.weather[0].description),$("#ikon").val(a.weather[0].icon),$("#weatherIcon").attr("src","http://openweathermap.org/img/wn/"+a.weather[0].icon+"@2x.png"),$("#weather").modal("show"),$("#location").val("")})}})}})});
+            </script>
+
+        <script src="assets/js/vendor/bootstrap.min.js"></script>
+
+        <script src="assets/js/jquery.magnific-popup.js"></script>
+        <script src="assets/js/jquery.easing.1.3.js"></script>
+        <script src="assets/js/swiper.min.js"></script>
+        <script src="assets/js/jquery.collapse.js"></script>
+        <script src="assets/js/bootsnav.js"></script>
+
+
+
+        <script src="assets/js/plugins.js"></script>
+        <script src="assets/js/dashboard.js"></script>
+
+    </body>
+</html>
