@@ -116,7 +116,33 @@ router.post('/weather', urlencodedParser, async function(req, res, next){
     }
     try{
   const response = await axios(
-      'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+long+'&appid=dd4b86b877110ee65e0fc43de22e3347'
+      'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+long+'&appid='+process.env.OW_API
+  ).then(function (response) {
+      
+      res.send(response.data);
+    });
+  }
+  catch(e)
+  {
+      res.send(e);
+  }
+})
+router.post('/ramalan', urlencodedParser, async function(req, res, next){
+    if(req.body.id)
+    {
+        query = {id: +req.body.id, user_id: req.userData.id};
+        var result = await mongo.search('favorite', query);
+        var lat = result[0].lat
+        var long = result[0].long
+    }
+    else
+    {
+        var lat = req.body.lat
+        var long = req.body.long
+    }
+    try{
+  const response = await axios(
+      'https://api.openweathermap.org/data/2.5/onecall?lat='+lat+'&lon='+long+'&appid='+process.env.OW_API
   ).then(function (response) {
       
       res.send(response.data);
