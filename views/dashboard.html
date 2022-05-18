@@ -117,11 +117,15 @@
         <table class="table text-black" style="background-color: white;" id="ramalan">
         
         </table>
+        <table class="table text-black" style="background-color: white;" id="history">
+        
+        </table>
         <div class="modal-footer">
             <input type="hidden" id="lat">
             <input type="hidden" id="long">
             <input type="hidden" id="kota">
             <input type="hidden" id="ikon">
+            <button type="button" class="btn btn-primary" id="historyramalan">History</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" onClick="tambahFavorit()">Add favorite</button>
         </div>
@@ -145,8 +149,13 @@
         <table class="table text-black" style="background-color: white;" id="framalan">
         
         </table>
+
+        <table class="table text-black" style="background-color: white;" id="fhistory">
+        
+        </table>
         <div class="modal-footer">
             <input type="hidden" id="fid">
+            <button type="button" class="btn btn-primary" id="fhistoryramalan">History</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" onClick="deleteFavorit()">Delete favorite</button>
         </div>
@@ -155,308 +164,7 @@
   </div>
 
         </div>
-        <script>function tambahFavorit() {
-          $("#weather").modal("hide");
-          var a = $("#lat").val(),
-              t = $("#long").val(),
-              o = $("#kota").val(),
-              e = $("#suhu").html(),
-              r = $("#deskripsi").html(),
-              i = $("#ikon").val();
-          $.ajax({
-              cache: !1,
-              url: "/api/favorite/add",
-              headers: {
-                  Authorization: localStorage.getItem("auth")
-              },
-              method: "PUT",
-              data: {
-                  lat: a,
-                  long: t,
-                  kota: o
-              },
-              success: function(a) {
-                  0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/"), $("#favorite").append('<tr id="row' + a.id + '" onclick="lihatfavorit(' + a.id + ')">\n                              <td>' + o + '</td>\n                              <td align="right">' + e + '</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/' + i + '.png"></span>' + r + "</td>\n                              \n</tr>"), $("#weather").modal("hide")
-              }
-          })
-      }
-      
-      function logout() {
-          localStorage.removeItem("auth"), window.location.href = "/"
-      }
-      
-      function getLocation() {
-          navigator.geolocation ? navigator.geolocation.getCurrentPosition(showPosition) : alert("Geolocation is not supported by this browser.")
-      }
-      
-      function showPosition(a) {
-          $("#loading").css("background-color", "transparent"), $("#loading").show(), $.ajax({
-              url: "/api/weather",
-              method: "POST",
-              headers: {
-                  Authorization: localStorage.getItem("auth")
-              },
-              data: {
-                  lat: a.coords.latitude,
-                  long: a.coords.longitude
-              }
-          }).done(t => {
-              0 == t.success && (localStorage.removeItem("auth"), window.location.href = "/"), $("#loading").hide();
-              var o = parseFloat(t.main.temp - 273.15).toFixed(2);
-              $("#suhu").html(o + "&deg;C"), $("#lat").val(a.coords.latitude), $("#long").val(a.coords.longitude), $("#kota").val(t.name), $("#lokasi").html(" " + t.name), $("#deskripsi").html(" " + t.weather[0].description), $("#ikon").val(t.weather[0].icon), $("#weatherIcon").attr("src", "https://openweathermap.org/img/wn/" + t.weather[0].icon + "@2x.png"), $("#weather").modal("show")
-              $.ajax({
-                              url: "/api/ramalan",
-                              method: "POST",
-                              headers: {
-                                  Authorization: localStorage.getItem("auth")
-                              },
-                              data: {
-                                  lat:  a.coords.latitude,
-                                  long: a.coords.longitude
-                              }
-                          }).done(a => {
-                            var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                            var date1 = new Date(a.daily[0].dt*1000);
-                            var date2 = new Date(a.daily[1].dt*1000);
-                            var date3 = new Date(a.daily[2].dt*1000);
-                            var date4 = new Date(a.daily[3].dt*1000);
-                            var date5 = new Date(a.daily[4].dt*1000);
-                            var hari1 = days[date1.getDay({timeZone: a.timezone})]+' '+months[date1.getMonth({timeZone: a.timezone})]+' '+date1.getDate({timeZone: a.timezone});
-                            var hari2 = days[date2.getDay({timeZone: a.timezone})]+' '+months[date2.getMonth({timeZone: a.timezone})]+' '+date2.getDate({timeZone: a.timezone});
-                            var hari3 = days[date3.getDay({timeZone: a.timezone})]+' '+months[date3.getMonth({timeZone: a.timezone})]+' '+date3.getDate({timeZone: a.timezone});
-                            var hari4 = days[date4.getDay({timeZone: a.timezone})]+' '+months[date4.getMonth({timeZone: a.timezone})]+' '+date4.getDate({timeZone: a.timezone});
-                            var hari5 = days[date5.getDay({timeZone: a.timezone})]+' '+months[date5.getMonth({timeZone: a.timezone})]+' '+date5.getDate({timeZone: a.timezone});
-                            var suhu1 = (a.daily[0].temp.day - 273.15).toFixed(2);
-                            var suhu2 = (a.daily[1].temp.day - 273.15).toFixed(2);
-                            var suhu3 = (a.daily[2].temp.day - 273.15).toFixed(2);
-                            var suhu4 = (a.daily[3].temp.day - 273.15).toFixed(2);
-                            var suhu5 = (a.daily[4].temp.day - 273.15).toFixed(2);
-                            var weather1 = a.daily[0].weather[0].description;
-                            var weather2 = a.daily[1].weather[0].description;
-                            var weather3 = a.daily[2].weather[0].description;
-                            var weather4 = a.daily[3].weather[0].description;
-                            var weather5 = a.daily[4].weather[0].description;
-                            var icon1 = a.daily[0].weather[0].icon;
-                            var icon2 = a.daily[1].weather[0].icon;
-                            var icon3 = a.daily[2].weather[0].icon;
-                            var icon4 = a.daily[3].weather[0].icon;
-                            var icon5 = a.daily[4].weather[0].icon;
-                            $("#ramalan").html('');
-                            var sc = '<tr><td>'+hari1+'</td><td align="right">'+suhu1+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon1+'.png"></span>'+weather1+'</td></tr>';
-                            sc += '<tr><td>'+hari2+'</td><td align="right">'+suhu2+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon2+'.png"></span>'+weather2+'</td></tr>';
-                            sc += '<tr><td>'+hari3+'</td><td align="right">'+suhu3+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon3+'.png"></span>'+weather3+'</td></tr>';
-                            sc += '<tr><td>'+hari4+'</td><td align="right">'+suhu4+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon4+'.png"></span>'+weather4+'</td></tr>';
-                            sc += '<tr><td>'+hari5+'</td><td align="right">'+suhu5+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon5+'.png"></span>'+weather5+'</td></tr>';
-                            $("#ramalan").append(sc);
-                          })
-          })
-      }
-      
-      function refreshFavorite() {
-          $.ajax({
-              url: "/api/favorite/all",
-              method: "GET",
-              headers: {
-                  Authorization: localStorage.getItem("auth")
-              }
-          }).done(a => {
-              if (0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/"), 0 !== a.data.length) {
-                  a.data.forEach(a => {
-                      $.ajax({
-                          url: "/api/weather",
-                          method: "POST",
-                          headers: {
-                              Authorization: localStorage.getItem("auth")
-                          },
-                          data: {
-                              lat: a.lat,
-                              long: a.long
-                          }
-                      }).then(t => {
-                          0 == t.success && (localStorage.removeItem("auth"), window.location.href = "/");
-                          var o = parseFloat(t.main.temp - 273.15).toFixed(2);
-                          $("#favorite").append('<tr id="row' + a.id + '" onclick="lihatfavorit(' + a.id + ')">\n                              <td>' + a.kota + '</td>\n                              <td align="right">' + o + '&deg;C</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/' + t.weather[0].icon + '.png"></span>' + t.weather[0].description + "</td>\n                              \n</tr>")
-                      })
-                  })
-              }
-          })
-      }
-      
-      function lihatfavorit(a) {
-          $("#loading").css("background-color", "transparent"), $("#loading").show(), $.ajax({
-              url: "/api/weather",
-              method: "POST",
-              headers: {
-                  Authorization: localStorage.getItem("auth")
-              },
-              data: {
-                  id: a
-              }
-          }).done(t => {
-              0 == t.success && (localStorage.removeItem("auth"), window.location.href = "/"), $("#loading").hide();
-              var o = parseFloat(t.main.temp - 273.15).toFixed(2);
-              $("#fsuhu").html(o + "&deg;C"), $("#fkota").val(t.name), $("#flokasi").html(" " + t.name), $("#fid").val(a), $("#fdeskripsi").html(" " + t.weather[0].description), $("#fweatherIcon").attr("src", "https://openweathermap.org/img/wn/" + t.weather[0].icon + "@2x.png"), $("#cuacafavorit").modal("show")
-              $.ajax({
-    url: "/api/ramalan",
-    method: "POST",
-    headers: {
-        Authorization: localStorage.getItem("auth")
-    },
-    data: {
-      id: a
-    }
-}).done(a => {
-  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  var date1 = new Date(a.daily[0].dt*1000);
-  var date2 = new Date(a.daily[1].dt*1000);
-  var date3 = new Date(a.daily[2].dt*1000);
-  var date4 = new Date(a.daily[3].dt*1000);
-  var date5 = new Date(a.daily[4].dt*1000);
-  var hari1 = days[date1.getDay({timeZone: a.timezone})]+' '+months[date1.getMonth({timeZone: a.timezone})]+' '+date1.getDate({timeZone: a.timezone});
-  var hari2 = days[date2.getDay({timeZone: a.timezone})]+' '+months[date2.getMonth({timeZone: a.timezone})]+' '+date2.getDate({timeZone: a.timezone});
-  var hari3 = days[date3.getDay({timeZone: a.timezone})]+' '+months[date3.getMonth({timeZone: a.timezone})]+' '+date3.getDate({timeZone: a.timezone});
-  var hari4 = days[date4.getDay({timeZone: a.timezone})]+' '+months[date4.getMonth({timeZone: a.timezone})]+' '+date4.getDate({timeZone: a.timezone});
-  var hari5 = days[date5.getDay({timeZone: a.timezone})]+' '+months[date5.getMonth({timeZone: a.timezone})]+' '+date5.getDate({timeZone: a.timezone});
-  var suhu1 = (a.daily[0].temp.day - 273.15).toFixed(2);
-  var suhu2 = (a.daily[1].temp.day - 273.15).toFixed(2);
-  var suhu3 = (a.daily[2].temp.day - 273.15).toFixed(2);
-  var suhu4 = (a.daily[3].temp.day - 273.15).toFixed(2);
-  var suhu5 = (a.daily[4].temp.day - 273.15).toFixed(2);
-  var weather1 = a.daily[0].weather[0].description;
-  var weather2 = a.daily[1].weather[0].description;
-  var weather3 = a.daily[2].weather[0].description;
-  var weather4 = a.daily[3].weather[0].description;
-  var weather5 = a.daily[4].weather[0].description;
-  var icon1 = a.daily[0].weather[0].icon;
-  var icon2 = a.daily[1].weather[0].icon;
-  var icon3 = a.daily[2].weather[0].icon;
-  var icon4 = a.daily[3].weather[0].icon;
-  var icon5 = a.daily[4].weather[0].icon;
-  $("#ramalan").html('');
-  var sc = '<tr><td>'+hari1+'</td><td align="right">'+suhu1+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon1+'.png"></span>'+weather1+'</td></tr>';
-  sc += '<tr><td>'+hari2+'</td><td align="right">'+suhu2+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon2+'.png"></span>'+weather2+'</td></tr>';
-  sc += '<tr><td>'+hari3+'</td><td align="right">'+suhu3+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon3+'.png"></span>'+weather3+'</td></tr>';
-  sc += '<tr><td>'+hari4+'</td><td align="right">'+suhu4+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon4+'.png"></span>'+weather4+'</td></tr>';
-  sc += '<tr><td>'+hari5+'</td><td align="right">'+suhu5+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon5+'.png"></span>'+weather5+'</td></tr>';
-  $("#framalan").append(sc);
-})
-          })
-      }
-      
-      function deleteFavorit() {
-          $("#cuacafavorit").modal("hide");
-          var a = $("#fid").val();
-          $("#row" + a).remove(), $.ajax({
-              cache: !1,
-              url: "/api/favorite/" + a,
-              headers: {
-                  Authorization: localStorage.getItem("auth")
-              },
-              method: "DELETE",
-              success: function(a) {
-                  0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/")
-              }
-          })
-      }
-      $(document).ready(function() {
-          refreshFavorite(), $("#location").autocomplete({
-              source: function(a, t) {
-                  $.ajax({
-                      cache: !1,
-                      url: "/api/city/" + a.term,
-                      headers: {
-                          Authorization: localStorage.getItem("auth")
-                      },
-                      success: function(a) {
-                          0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/"), t($.map(a.predictions, function(a) {
-                              return {
-                                  label: a.description,
-                                  id: a.place_id
-                              }
-                          }))
-                      }
-                  })
-              },
-              select: function(a, t) {
-                  $("#loading").css("background-color", "transparent"), $("#loading").show(), $.ajax({
-                      cache: !1,
-                      url: "/api/geo/" + t.item.id,
-                      headers: {
-                          Authorization: localStorage.getItem("auth")
-                      },
-                      success: function(a) {
-                          0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/");
-                          var t = a.result.geometry.location.lat,
-                              o = a.result.geometry.location.lng;
-                          $.ajax({
-                              url: "/api/weather",
-                              method: "POST",
-                              headers: {
-                                  Authorization: localStorage.getItem("auth")
-                              },
-                              data: {
-                                  lat: t,
-                                  long: o
-                              }
-                          }).done(a => {
-                              0 == a.success && (localStorage.removeItem("auth"), window.location.href = "/"), $("#loading").hide();
-                              var e = parseFloat(a.main.temp - 273.15).toFixed(2);
-                              $("#suhu").html(e + "&deg;C"), $("#lat").val(t), $("#long").val(o), $("#kota").val(a.name), $("#lokasi").html(" " + a.name), $("#deskripsi").html(" " + a.weather[0].description), $("#ikon").val(a.weather[0].icon), $("#weatherIcon").attr("src", "https://openweathermap.org/img/wn/" + a.weather[0].icon + "@2x.png"), $("#weather").modal("show"), $("#location").val("")
-                              
-                              $.ajax({
-                              url: "/api/ramalan",
-                              method: "POST",
-                              headers: {
-                                  Authorization: localStorage.getItem("auth")
-                              },
-                              data: {
-                                  lat: t,
-                                  long: o
-                              }
-                          }).done(a => {
-                            var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                            var date1 = new Date(a.daily[0].dt*1000);
-                            var date2 = new Date(a.daily[1].dt*1000);
-                            var date3 = new Date(a.daily[2].dt*1000);
-                            var date4 = new Date(a.daily[3].dt*1000);
-                            var date5 = new Date(a.daily[4].dt*1000);
-                            var hari1 = days[date1.getDay({timeZone: a.timezone})]+' '+months[date1.getMonth({timeZone: a.timezone})]+' '+date1.getDate({timeZone: a.timezone});
-                            var hari2 = days[date2.getDay({timeZone: a.timezone})]+' '+months[date2.getMonth({timeZone: a.timezone})]+' '+date2.getDate({timeZone: a.timezone});
-                            var hari3 = days[date3.getDay({timeZone: a.timezone})]+' '+months[date3.getMonth({timeZone: a.timezone})]+' '+date3.getDate({timeZone: a.timezone});
-                            var hari4 = days[date4.getDay({timeZone: a.timezone})]+' '+months[date4.getMonth({timeZone: a.timezone})]+' '+date4.getDate({timeZone: a.timezone});
-                            var hari5 = days[date5.getDay({timeZone: a.timezone})]+' '+months[date5.getMonth({timeZone: a.timezone})]+' '+date5.getDate({timeZone: a.timezone});
-                            var suhu1 = (a.daily[0].temp.day - 273.15).toFixed(2);
-                            var suhu2 = (a.daily[1].temp.day - 273.15).toFixed(2);
-                            var suhu3 = (a.daily[2].temp.day - 273.15).toFixed(2);
-                            var suhu4 = (a.daily[3].temp.day - 273.15).toFixed(2);
-                            var suhu5 = (a.daily[4].temp.day - 273.15).toFixed(2);
-                            var weather1 = a.daily[0].weather[0].description;
-                            var weather2 = a.daily[1].weather[0].description;
-                            var weather3 = a.daily[2].weather[0].description;
-                            var weather4 = a.daily[3].weather[0].description;
-                            var weather5 = a.daily[4].weather[0].description;
-                            var icon1 = a.daily[0].weather[0].icon;
-                            var icon2 = a.daily[1].weather[0].icon;
-                            var icon3 = a.daily[2].weather[0].icon;
-                            var icon4 = a.daily[3].weather[0].icon;
-                            var icon5 = a.daily[4].weather[0].icon;
-                            $("#ramalan").html('');
-                            var sc = '<tr><td>'+hari1+'</td><td align="right">'+suhu1+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon1+'.png"></span>'+weather1+'</td></tr>';
-                            sc += '<tr><td>'+hari2+'</td><td align="right">'+suhu2+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon2+'.png"></span>'+weather2+'</td></tr>';
-                            sc += '<tr><td>'+hari3+'</td><td align="right">'+suhu3+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon3+'.png"></span>'+weather3+'</td></tr>';
-                            sc += '<tr><td>'+hari4+'</td><td align="right">'+suhu4+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon4+'.png"></span>'+weather4+'</td></tr>';
-                            sc += '<tr><td>'+hari5+'</td><td align="right">'+suhu5+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+icon5+'.png"></span>'+weather5+'</td></tr>';
-                            $("#ramalan").append(sc);
-                          })
-                          })
-                      }
-                  })
-              }
-          })
-      });
+        <script>function tambahFavorit(){$("#weather").modal("hide");var t=$("#lat").val(),e=$("#long").val(),a=$("#kota").val(),o=$("#suhu").html(),i=$("#deskripsi").html(),n=$("#ikon").val();$.ajax({cache:!1,url:"/api/favorite/add",headers:{Authorization:localStorage.getItem("auth")},method:"PUT",data:{lat:t,long:e,kota:a},success:function(t){0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#favorite").append('<tr id="row'+t.id+'" onclick="lihatfavorit('+t.id+')">\n                              <td>'+a+'</td>\n                              <td align="right">'+o+'</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+n+'.png"></span>'+i+"</td>\n                              \n</tr>"),$("#weather").modal("hide")}})}function logout(){localStorage.removeItem("auth"),window.location.href="/"}function getLocation(){navigator.geolocation?navigator.geolocation.getCurrentPosition(showPosition):alert("Geolocation is not supported by this browser.")}function showPosition(t){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:t.coords.latitude,long:t.coords.longitude}}).done(e=>{var a=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],o=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];0==e.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var i=parseFloat(e.main.temp-273.15).toFixed(2);$("#suhu").html(i+"&deg;C"),$("#lat").val(t.coords.latitude),$("#long").val(t.coords.longitude),$("#kota").val(e.name),$("#lokasi").html(" "+e.name),$("#deskripsi").html(" "+e.weather[0].description),$("#ikon").val(e.weather[0].icon),$("#weatherIcon").attr("src","https://openweathermap.org/img/wn/"+e.weather[0].icon+"@2x.png"),$("#weather").modal("show"),$.ajax({url:"/api/ramalan",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:t.coords.latitude,long:t.coords.longitude}}).done(t=>{var e=new Date(1e3*t.daily[0].dt),i=new Date(1e3*t.daily[1].dt),n=new Date(1e3*t.daily[2].dt),r=new Date(1e3*t.daily[3].dt),d=new Date(1e3*t.daily[4].dt),g=a[e.getDay({timeZone:t.timezone})]+" "+o[e.getMonth({timeZone:t.timezone})]+" "+e.getDate({timeZone:t.timezone}),m=a[i.getDay({timeZone:t.timezone})]+" "+o[i.getMonth({timeZone:t.timezone})]+" "+i.getDate({timeZone:t.timezone}),h=a[n.getDay({timeZone:t.timezone})]+" "+o[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=a[r.getDay({timeZone:t.timezone})]+" "+o[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=a[d.getDay({timeZone:t.timezone})]+" "+o[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=(t.daily[0].temp.day-273.15).toFixed(2),c=(t.daily[1].temp.day-273.15).toFixed(2),w=(t.daily[2].temp.day-273.15).toFixed(2),y=(t.daily[3].temp.day-273.15).toFixed(2),u=(t.daily[4].temp.day-273.15).toFixed(2),x=t.daily[0].weather[0].description,z=t.daily[1].weather[0].description,D=t.daily[2].weather[0].description,Z=t.daily[3].weather[0].description,v=t.daily[4].weather[0].description,f=t.daily[0].weather[0].icon,I=t.daily[1].weather[0].icon,F=t.daily[2].weather[0].icon,S=t.daily[3].weather[0].icon,b=t.daily[4].weather[0].icon;$("#ramalan").html("");var M="<tr><td>"+g+'</td><td align="right">'+s+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+f+'.png"></span>'+x+"</td></tr>";M+="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>",M+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",M+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",M+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",$("#ramalan").append(M)}),$.ajax({url:"/api/history",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:t.coords.latitude,long:t.coords.longitude}}).done(e=>{var i=new Date(1e3*e[0].dt),n=new Date(1e3*e[1].dt),r=new Date(1e3*e[2].dt),d=new Date(1e3*e[3].dt),g=new Date(1e3*e[4].dt),m=a[i.getDay({timeZone:t.timezone})]+" "+o[i.getMonth({timeZone:t.timezone})]+" "+i.getDate({timeZone:t.timezone}),h=a[n.getDay({timeZone:t.timezone})]+" "+o[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=a[r.getDay({timeZone:t.timezone})]+" "+o[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=a[d.getDay({timeZone:t.timezone})]+" "+o[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=a[g.getDay({timeZone:t.timezone})]+" "+o[g.getMonth({timeZone:t.timezone})]+" "+g.getDate({timeZone:t.timezone}),c=(e[0].temp-273.15).toFixed(2),w=(e[1].temp-273.15).toFixed(2),y=(e[2].temp-273.15).toFixed(2),u=(e[3].temp-273.15).toFixed(2),x=(e[4].temp-273.15).toFixed(2),z=e[0].weather[0].description,D=e[1].weather[0].description,Z=e[2].weather[0].description,v=e[3].weather[0].description,f=e[4].weather[0].description,I=e[0].weather[0].icon,F=e[1].weather[0].icon,S=e[2].weather[0].icon,b=e[3].weather[0].icon,M=e[4].weather[0].icon;$("#history").html("");var C="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>";C+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",C+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",C+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",C+="<tr><td>"+s+'</td><td align="right">'+x+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+M+'.png"></span>'+f+"</td></tr>",$("#history").append(C)}),$("#history").hide()})}function refreshFavorite(){$.ajax({url:"/api/favorite/all",method:"GET",headers:{Authorization:localStorage.getItem("auth")}}).done(t=>{0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),0!==t.data.length&&t.data.forEach(t=>{$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:t.lat,long:t.long}}).then(e=>{0==e.success&&(localStorage.removeItem("auth"),window.location.href="/");var a=parseFloat(e.main.temp-273.15).toFixed(2);$("#favorite").append('<tr id="row'+t.id+'" onclick="lihatfavorit('+t.id+')">\n                              <td>'+t.kota+'</td>\n                              <td align="right">'+a+'&deg;C</td>\n                              <td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+e.weather[0].icon+'.png"></span>'+e.weather[0].description+"</td>\n                              \n</tr>")})})})}function lihatfavorit(t){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{id:t}}).done(e=>{0==e.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var a=parseFloat(e.main.temp-273.15).toFixed(2);$("#fsuhu").html(a+"&deg;C"),$("#fkota").val(e.name),$("#flokasi").html(" "+e.name),$("#fid").val(t),$("#fdeskripsi").html(" "+e.weather[0].description),$("#fweatherIcon").attr("src","https://openweathermap.org/img/wn/"+e.weather[0].icon+"@2x.png"),$("#cuacafavorit").modal("show");var o=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],i=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];$.ajax({url:"/api/ramalan",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{id:t}}).done(t=>{var e=new Date(1e3*t.daily[0].dt),a=new Date(1e3*t.daily[1].dt),n=new Date(1e3*t.daily[2].dt),r=new Date(1e3*t.daily[3].dt),d=new Date(1e3*t.daily[4].dt),g=o[e.getDay({timeZone:t.timezone})]+" "+i[e.getMonth({timeZone:t.timezone})]+" "+e.getDate({timeZone:t.timezone}),m=o[a.getDay({timeZone:t.timezone})]+" "+i[a.getMonth({timeZone:t.timezone})]+" "+a.getDate({timeZone:t.timezone}),h=o[n.getDay({timeZone:t.timezone})]+" "+i[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=o[r.getDay({timeZone:t.timezone})]+" "+i[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=o[d.getDay({timeZone:t.timezone})]+" "+i[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=(t.daily[0].temp.day-273.15).toFixed(2),c=(t.daily[1].temp.day-273.15).toFixed(2),w=(t.daily[2].temp.day-273.15).toFixed(2),y=(t.daily[3].temp.day-273.15).toFixed(2),u=(t.daily[4].temp.day-273.15).toFixed(2),x=t.daily[0].weather[0].description,z=t.daily[1].weather[0].description,D=t.daily[2].weather[0].description,Z=t.daily[3].weather[0].description,v=t.daily[4].weather[0].description,f=t.daily[0].weather[0].icon,I=t.daily[1].weather[0].icon,F=t.daily[2].weather[0].icon,S=t.daily[3].weather[0].icon,b=t.daily[4].weather[0].icon;$("#framalan").html("");var M="<tr><td>"+g+'</td><td align="right">'+s+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+f+'.png"></span>'+x+"</td></tr>";M+="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>",M+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",M+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",M+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",$("#framalan").append(M)}),$.ajax({url:"/api/history",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{id:t}}).done(e=>{var a=new Date(1e3*e[0].dt),n=new Date(1e3*e[1].dt),r=new Date(1e3*e[2].dt),d=new Date(1e3*e[3].dt),g=new Date(1e3*e[4].dt),m=o[a.getDay({timeZone:t.timezone})]+" "+i[a.getMonth({timeZone:t.timezone})]+" "+a.getDate({timeZone:t.timezone}),h=o[n.getDay({timeZone:t.timezone})]+" "+i[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=o[r.getDay({timeZone:t.timezone})]+" "+i[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=o[d.getDay({timeZone:t.timezone})]+" "+i[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=o[g.getDay({timeZone:t.timezone})]+" "+i[g.getMonth({timeZone:t.timezone})]+" "+g.getDate({timeZone:t.timezone}),c=(e[0].temp-273.15).toFixed(2),w=(e[1].temp-273.15).toFixed(2),y=(e[2].temp-273.15).toFixed(2),u=(e[3].temp-273.15).toFixed(2),x=(e[4].temp-273.15).toFixed(2),z=e[0].weather[0].description,D=e[1].weather[0].description,Z=e[2].weather[0].description,v=e[3].weather[0].description,f=e[4].weather[0].description,I=e[0].weather[0].icon,F=e[1].weather[0].icon,S=e[2].weather[0].icon,b=e[3].weather[0].icon,M=e[4].weather[0].icon;$("#fhistory").html("");var C="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>";C+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",C+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",C+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",C+="<tr><td>"+s+'</td><td align="right">'+x+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+M+'.png"></span>'+f+"</td></tr>",$("#fhistory").append(C)}),$("#fhistory").hide()})}function deleteFavorit(){$("#cuacafavorit").modal("hide");var t=$("#fid").val();$("#row"+t).remove(),$.ajax({cache:!1,url:"/api/favorite/"+t,headers:{Authorization:localStorage.getItem("auth")},method:"DELETE",success:function(t){0==t.success&&(localStorage.removeItem("auth"),window.location.href="/")}})}$(document).ready(function(){$("#historyramalan").on("click",function(){"History"==$("#historyramalan").html()?($("#historyramalan").html("Forecast"),$("#ramalan").hide(),$("#history").show()):($("#historyramalan").html("History"),$("#ramalan").show(),$("#history").hide())}),$("#fhistoryramalan").on("click",function(){"History"==$("#fhistoryramalan").html()?($("#fhistoryramalan").html("Forecast"),$("#framalan").hide(),$("#fhistory").show()):($("#fhistoryramalan").html("History"),$("#framalan").show(),$("#fhistory").hide())}),refreshFavorite(),$("#location").autocomplete({source:function(t,e){$.ajax({cache:!1,url:"/api/city/"+t.term,headers:{Authorization:localStorage.getItem("auth")},success:function(t){0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),e($.map(t.predictions,function(t){return{label:t.description,id:t.place_id}}))}})},select:function(t,e){$("#loading").css("background-color","transparent"),$("#loading").show(),$.ajax({cache:!1,url:"/api/geo/"+e.item.id,headers:{Authorization:localStorage.getItem("auth")},success:function(t){var e=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],a=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];0==t.success&&(localStorage.removeItem("auth"),window.location.href="/");var o=t.result.geometry.location.lat,i=t.result.geometry.location.lng;$.ajax({url:"/api/weather",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:o,long:i}}).done(t=>{0==t.success&&(localStorage.removeItem("auth"),window.location.href="/"),$("#loading").hide();var n=parseFloat(t.main.temp-273.15).toFixed(2);$("#suhu").html(n+"&deg;C"),$("#lat").val(o),$("#long").val(i),$("#kota").val(t.name),$("#lokasi").html(" "+t.name),$("#deskripsi").html(" "+t.weather[0].description),$("#ikon").val(t.weather[0].icon),$("#weatherIcon").attr("src","https://openweathermap.org/img/wn/"+t.weather[0].icon+"@2x.png"),$("#weather").modal("show"),$("#location").val(""),$.ajax({url:"/api/ramalan",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:o,long:i}}).done(t=>{var o=new Date(1e3*t.daily[0].dt),i=new Date(1e3*t.daily[1].dt),n=new Date(1e3*t.daily[2].dt),r=new Date(1e3*t.daily[3].dt),d=new Date(1e3*t.daily[4].dt),g=e[o.getDay({timeZone:t.timezone})]+" "+a[o.getMonth({timeZone:t.timezone})]+" "+o.getDate({timeZone:t.timezone}),m=e[i.getDay({timeZone:t.timezone})]+" "+a[i.getMonth({timeZone:t.timezone})]+" "+i.getDate({timeZone:t.timezone}),h=e[n.getDay({timeZone:t.timezone})]+" "+a[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=e[r.getDay({timeZone:t.timezone})]+" "+a[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=e[d.getDay({timeZone:t.timezone})]+" "+a[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=(t.daily[0].temp.day-273.15).toFixed(2),c=(t.daily[1].temp.day-273.15).toFixed(2),w=(t.daily[2].temp.day-273.15).toFixed(2),y=(t.daily[3].temp.day-273.15).toFixed(2),u=(t.daily[4].temp.day-273.15).toFixed(2),x=t.daily[0].weather[0].description,z=t.daily[1].weather[0].description,D=t.daily[2].weather[0].description,Z=t.daily[3].weather[0].description,v=t.daily[4].weather[0].description,f=t.daily[0].weather[0].icon,I=t.daily[1].weather[0].icon,F=t.daily[2].weather[0].icon,S=t.daily[3].weather[0].icon,b=t.daily[4].weather[0].icon;$("#ramalan").html("");var M="<tr><td>"+g+'</td><td align="right">'+s+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+f+'.png"></span>'+x+"</td></tr>";M+="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>",M+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",M+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",M+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",$("#ramalan").append(M)}),$.ajax({url:"/api/history",method:"POST",headers:{Authorization:localStorage.getItem("auth")},data:{lat:o,long:i}}).done(o=>{var i=new Date(1e3*o[0].dt),n=new Date(1e3*o[1].dt),r=new Date(1e3*o[2].dt),d=new Date(1e3*o[3].dt),g=new Date(1e3*o[4].dt),m=e[i.getDay({timeZone:t.timezone})]+" "+a[i.getMonth({timeZone:t.timezone})]+" "+i.getDate({timeZone:t.timezone}),h=e[n.getDay({timeZone:t.timezone})]+" "+a[n.getMonth({timeZone:t.timezone})]+" "+n.getDate({timeZone:t.timezone}),l=e[r.getDay({timeZone:t.timezone})]+" "+a[r.getMonth({timeZone:t.timezone})]+" "+r.getDate({timeZone:t.timezone}),p=e[d.getDay({timeZone:t.timezone})]+" "+a[d.getMonth({timeZone:t.timezone})]+" "+d.getDate({timeZone:t.timezone}),s=e[g.getDay({timeZone:t.timezone})]+" "+a[g.getMonth({timeZone:t.timezone})]+" "+g.getDate({timeZone:t.timezone}),c=(o[0].temp-273.15).toFixed(2),w=(o[1].temp-273.15).toFixed(2),y=(o[2].temp-273.15).toFixed(2),u=(o[3].temp-273.15).toFixed(2),x=(o[4].temp-273.15).toFixed(2),z=o[0].weather[0].description,D=o[1].weather[0].description,Z=o[2].weather[0].description,v=o[3].weather[0].description,f=o[4].weather[0].description,I=o[0].weather[0].icon,F=o[1].weather[0].icon,S=o[2].weather[0].icon,b=o[3].weather[0].icon,M=o[4].weather[0].icon;$("#history").html("");var C="<tr><td>"+m+'</td><td align="right">'+c+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+I+'.png"></span>'+z+"</td></tr>";C+="<tr><td>"+h+'</td><td align="right">'+w+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+F+'.png"></span>'+D+"</td></tr>",C+="<tr><td>"+l+'</td><td align="right">'+y+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+S+'.png"></span>'+Z+"</td></tr>",C+="<tr><td>"+p+'</td><td align="right">'+u+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+b+'.png"></span>'+v+"</td></tr>",C+="<tr><td>"+s+'</td><td align="right">'+x+'&deg;C</td><td align="right"><img class="weatherIcon" style="margin-top: -20px; margin-bottom: -20px;" src="https://openweathermap.org/img/wn/'+M+'.png"></span>'+f+"</td></tr>",$("#history").append(C)}),$("#history").hide()})}})}})});
             </script>
 
         <script src="assets/js/vendor/bootstrap.min.js"></script>

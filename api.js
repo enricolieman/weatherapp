@@ -152,6 +152,63 @@ router.post('/ramalan', urlencodedParser, async function(req, res, next){
   {
       res.send(e);
   }
+  
+})
+
+router.post('/history', urlencodedParser, async function(req, res, next){
+    if(req.body.id)
+    {
+        query = {id: +req.body.id, user_id: req.userData.id};
+        var result = await mongo.search('favorite', query);
+        var lat = result[0].lat
+        var long = result[0].long
+    }
+    else
+    {
+        var lat = req.body.lat
+        var long = req.body.long
+    }
+    try{
+        var d = new Date();
+
+        var d1 = d.setDate(d.getDate() - 1);
+        var d2 = d.setDate(d.getDate() - 1);
+        var d3 = d.setDate(d.getDate() - 1);
+        var d4 = d.setDate(d.getDate() - 1);
+        var d5 = d.setDate(d.getDate() - 1);
+        const time1 = Math.floor(d1 / 1000)
+        const time2 = Math.floor(d2 / 1000)
+        const time3 = Math.floor(d3 / 1000)
+        const time4 = Math.floor(d4 / 1000)
+        const time5 = Math.floor(d5 / 1000)
+        var url1 = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?&dt='+time1+'&lat='+lat+'&lon='+long+'&appid='+process.env.OW_API;
+        var url2 = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?&dt='+time2+'&lat='+lat+'&lon='+long+'&appid='+process.env.OW_API;
+        var url3 = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?&dt='+time3+'&lat='+lat+'&lon='+long+'&appid='+process.env.OW_API;
+        var url4 = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?&dt='+time4+'&lat='+lat+'&lon='+long+'&appid='+process.env.OW_API;
+        var url5 = 'https://api.openweathermap.org/data/2.5/onecall/timemachine?&dt='+time5+'&lat='+lat+'&lon='+long+'&appid='+process.env.OW_API;
+        var resp = [];
+        await axios(url1).then(function (response) {
+        resp.push(response.data.current);
+        });
+        await axios(url2).then(function (response) {
+            resp.push(response.data.current);
+            });
+        await axios(url3).then(function (response) {
+            resp.push(response.data.current);
+            });
+        await axios(url4).then(function (response) {
+            resp.push(response.data.current);
+            });
+        await axios(url5).then(function (response) {
+            resp.push(response.data.current);
+            });
+            res.send(resp)
+        
+  }
+  catch(e)
+  {
+      res.send(e);
+  }
 })
 
 
