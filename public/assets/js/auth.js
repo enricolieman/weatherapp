@@ -5,7 +5,10 @@ function login()
     $.ajax({
         url: "/auth/login",
         method: "POST",
-        data: {email: email, password: password}
+        headers: {
+          "Content-type":"application/json",
+      },
+        data: '{"email": "'+email+'", "password": "'+password+'"}'
       }).done((data) => {
         if(data.success == false)
         {
@@ -25,7 +28,10 @@ function register()
     $.ajax({
         url: "/auth/register",
         method: "POST",
-        data: {email: email, password: password}
+        headers: {
+          "Content-type":"application/json",
+      },
+        data: '{"email": "'+email+'", "password": "'+password+'"}'
       }).done((data) => {
         if(data.success == false)
         {

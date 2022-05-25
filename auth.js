@@ -1,14 +1,13 @@
 var express = require('express'),
     router = express.Router();
 var mongo = require("./db")
-var bodyParser = require('body-parser')
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+router.use(express.json());
 const md5 = require("md5")
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-router.post('/login', urlencodedParser, async function(req, res, next){
+router.post('/login', async function(req, res, next){
     var email = req.body.email;
     var password = req.body.password;
     var newPass = md5(password)
@@ -26,7 +25,7 @@ router.post('/login', urlencodedParser, async function(req, res, next){
     
   })
 
-  router.post('/register', urlencodedParser, async function(req, res, next){
+  router.post('/register', async function(req, res, next){
     var email = req.body.email;
     var password = req.body.password;
     var result = await mongo.search('users', {email, email});
