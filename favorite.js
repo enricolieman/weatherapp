@@ -39,7 +39,7 @@ router.put('/add', urlencodedParser, async function(req, res, next){
 
     query = {user_id: req.userData.id, id: +req.params.id}
     find = await mongo.delete('favorite', query);
-    console.log(find);
+    console.log(query);
             
         if(find)
         {

@@ -9,7 +9,7 @@ const axios = require("axios")
 dotenv.config();
 
 router.use((req, res, next) => {
-    console.log(req.body)
+console.log(req);
     var auth = req.headers.authorization;
     if(!(auth))
     {
