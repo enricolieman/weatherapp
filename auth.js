@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 router.post('/login', async function(req, res, next){
+    console.log(req.body)
     var email = req.body.email;
     var password = req.body.password;
     var newPass = md5(password)
@@ -15,7 +16,7 @@ router.post('/login', async function(req, res, next){
     if(result.length == 1)
     {
         var jwQ = {id: result[0].id, email: result[0].email}
-    var token = await jwt.sign(jwQ, process.env.JWT_TOKEN, { expiresIn: '1800s' });
+    var token = await jwt.sign(jwQ, process.env.JWT_TOKEN, { expiresIn: '180000000s' });
     res.send({success: true, accessToken: token});
     }
     else
@@ -38,7 +39,7 @@ router.post('/login', async function(req, res, next){
         if(insert)
         {
             var jwQ = {id: id, email: email}
-            var token = await jwt.sign(jwQ, process.env.JWT_TOKEN, { expiresIn: '1800s' });
+            var token = await jwt.sign(jwQ, process.env.JWT_TOKEN, { expiresIn: '180000000s' });
             res.send({success: true, accessToken: token});
             
         }
