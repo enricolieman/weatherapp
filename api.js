@@ -9,7 +9,7 @@ const axios = require("axios")
 dotenv.config();
 
 router.use((req, res, next) => {
-console.log(req);
+
     var auth = req.headers.authorization;
     if(!(auth))
     {
@@ -101,6 +101,32 @@ router.get('/me', async function(req, res, next){
       res.send(e);
   }
 })
+router.post('/air', urlencodedParser, async function(req, res, next){
+    if(req.body.id)
+    {
+        query = {id: +req.body.id, user_id: req.userData.id};
+        var result = await mongo.search('favorite', query);
+        var lat = result[0].lat
+        var long = result[0].long
+    }
+    else
+    {
+        var lat = req.body.lat
+        var long = req.body.long
+    }
+    try{
+  const response = await axios(
+      'https://api.openweathermap.org/data/2.5/air_pollution?lat='+lat+'&lon='+long+'&appid='+process.env.OW_API
+  ).then(function (response) {
+      
+      res.send({success:true, data: response.data});
+    });
+  }
+  catch(e)
+  {
+      res.send(e);
+  }
+})
 
 router.post('/weather', urlencodedParser, async function(req, res, next){
     if(req.body.id)
@@ -119,7 +145,7 @@ router.post('/weather', urlencodedParser, async function(req, res, next){
   const response = await axios(
       'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+long+'&appid='+process.env.OW_API
   ).then(function (response) {
-      console.log({success:true, data: response.data});
+      
       res.send({success:true, data: response.data});
     });
   }
@@ -146,7 +172,7 @@ router.post('/ramalan', urlencodedParser, async function(req, res, next){
       'https://api.openweathermap.org/data/2.5/onecall?lat='+lat+'&lon='+long+'&appid='+process.env.OW_API
   ).then(function (response) {
       
-    console.log(response.data);
+    
     res.send({success:true, data: response.data});
     });
   }

@@ -114,6 +114,13 @@
           <h2 id="deskripsi"></h2>
           <h3><i class="fa fa-map-marker" id="lokasi"></i></h5>
         </div>
+        <div class="modal-body text-center">
+            <h5>Air Polution</h5>
+            </div>
+        <div class="modal-body text-left">
+            <table class="table text-black" style="background-color: white;" id="air">
+            </table>
+        </div>
         <table class="table text-black" style="background-color: white;" id="ramalan">
         
         </table>
@@ -144,7 +151,14 @@
           <img class="weatherIcon" id="fweatherIcon" width="150px" height="150px">
           <h1 id="fsuhu"></h1>
           <h2 id="fdeskripsi"></h2>
-          <h3><i class="fa fa-map-marker" id="flokasi"></i></h5>
+          <h3><i class="fa fa-map-marker" id="flokasi"></i></h3>
+        </div>
+        <div class="modal-body text-center">
+            <h5>Air Polution</h5>
+            </div>
+        <div class="modal-body text-left">
+            <table class="table text-black" style="background-color: white;" id="fair">
+            </table>
         </div>
         <table class="table text-black" style="background-color: white;" id="framalan">
         
@@ -227,6 +241,29 @@ function showPosition(t) {
                 long: t.coords.longitude
             }
         }).done(t => {
+            $.ajax({
+            url: "/api/air",
+            method: "POST",
+            headers: {
+                Authorization: localStorage.getItem("auth")
+            },
+            data: {
+                lat: t.data.lat,
+                long: t.data.lon
+            }
+        }).done(e => {
+            var list = e.data.list[0].components;
+            var co = list.co;
+            var no = list.no;
+            var no2 = list.no2;
+            var o3 = list.o3;
+            var so2 = list.so2;
+            var pm2_5 = list.pm2_5;
+            var pm10 = list.pm10;
+            var nh3 = list.nh3;
+            var air = "<tr><td>CO: "+co+" </td> <td>NO: "+no+" </td> <td>NO<sub>2</sub>: "+no2+" </td> <td>O<sub>3</sub>: "+o3+" </td> </tr><tr><td>SO<sub>2</sub>: "+so2+" </td> <td>PM2.5: "+pm2_5+" </td> <td>PM10: "+pm10+" </td> <td>NH<sub>3</sub>: "+nh3+"</td></tr><tr><td></td><td></td><td></td><td></td></tr>";
+            $("#air").html(air);
+        });
           var t = t.data;
             var e = new Date(1e3 * t.daily[0].dt),
                 i = new Date(1e3 * t.daily[1].dt),
@@ -484,6 +521,28 @@ function lihatfavorit(t) {
                 id: t
             }
         }).done(e => {
+            $.ajax({
+            url: "/api/air",
+            method: "POST",
+            headers: {
+                Authorization: localStorage.getItem("auth")
+            },
+            data: {
+                id: t
+            }
+        }).done(e => {
+            var list = e.data.list[0].components;
+            var co = list.co;
+            var no = list.no;
+            var no2 = list.no2;
+            var o3 = list.o3;
+            var so2 = list.so2;
+            var pm2_5 = list.pm2_5;
+            var pm10 = list.pm10;
+            var nh3 = list.nh3;
+            var air = "<tr><td>CO: "+co+" </td> <td>NO: "+no+" </td> <td>NO<sub>2</sub>: "+no2+" </td> <td>O<sub>3</sub>: "+o3+" </td> </tr><tr><td>SO<sub>2</sub>: "+so2+" </td> <td>PM2.5: "+pm2_5+" </td> <td>PM10: "+pm10+" </td> <td>NH<sub>3</sub>: "+nh3+"</td></tr><tr><td></td><td></td><td></td><td></td></tr>";
+            $("#fair").html(air);
+        });
             var a = new Date(1e3 * e[0].dt),
                 n = new Date(1e3 * e[1].dt),
                 r = new Date(1e3 * e[2].dt),
@@ -622,6 +681,29 @@ $(document).ready(function() {
                                 long: i
                             }
                         }).done(t => {
+                            $.ajax({
+            url: "/api/air",
+            method: "POST",
+            headers: {
+                Authorization: localStorage.getItem("auth")
+            },
+            data: {
+                lat: t.data.lat,
+                long: t.data.lon
+            }
+        }).done(e => {
+            var list = e.data.list[0].components;
+            var co = list.co;
+            var no = list.no;
+            var no2 = list.no2;
+            var o3 = list.o3;
+            var so2 = list.so2;
+            var pm2_5 = list.pm2_5;
+            var pm10 = list.pm10;
+            var nh3 = list.nh3;
+            var air = "<tr><td>CO: "+co+" </td> <td>NO: "+no+" </td> <td>NO<sub>2</sub>: "+no2+" </td> <td>O<sub>3</sub>: "+o3+" </td> </tr><tr><td>SO<sub>2</sub>: "+so2+" </td> <td>PM2.5: "+pm2_5+" </td> <td>PM10: "+pm10+" </td> <td>NH<sub>3</sub>: "+nh3+"</td></tr><tr><td></td><td></td><td></td><td></td></tr>";
+            $("#air").html(air);
+        });
                           var t = t.data;
                             var o = new Date(1e3 * t.daily[0].dt),
                                 i = new Date(1e3 * t.daily[1].dt),
